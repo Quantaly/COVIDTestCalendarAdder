@@ -1,5 +1,0 @@
-This app does not collect any data about you. Everything is kept and processed locally; nothing, including your text messages and your calendar information, is sent to or stored on any remote server. If you delete the app's data or the app itself from your phone, you have deleted every bit of information the app has ever collected.
-
-Google Play does collect some anonymous data and provide it to me when you download the app; that is the purview of the Google Play privacy policy, not mine. If you want to avoid Google Play's data collection, feel free to build the app yourself! The source code is right here.
-
-:)
