@@ -10,6 +10,7 @@ import android.widget.AdapterView
 import android.widget.Button
 import android.widget.SimpleCursorAdapter
 import android.widget.Spinner
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
 val PERMISSIONS = arrayOf(
@@ -27,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
         val permissionButton = findViewById<Button>(R.id.permission_button)
         permissionButton.setOnClickListener {
-            requestPermissions(PERMISSIONS.filter {
+            ActivityCompat.requestPermissions(this, PERMISSIONS.filter {
                 ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
             }
                 .toTypedArray(), nextPermissionRequestCode++)
