@@ -18,6 +18,13 @@ val PERMISSIONS = arrayOf(
     "android.permission.WRITE_CALENDAR",
 )
 
+val EDIT_TEXT_PREFS = mapOf(
+    R.id.first_name_entry to R.string.preference_first_name,
+    R.id.last_name_entry to R.string.preference_last_name,
+    R.id.email_entry to R.string.preference_email,
+    R.id.phone_number_entry to R.string.preference_phone_number,
+)
+
 var nextPermissionRequestCode = 1;
 
 class MainActivity : AppCompatActivity() {
@@ -33,10 +40,21 @@ class MainActivity : AppCompatActivity() {
                 .toTypedArray(), nextPermissionRequestCode++)
         }
 
-        setupEditText(R.id.first_name_entry, R.string.preference_first_name)
-        setupEditText(R.id.last_name_entry, R.string.preference_last_name)
-        setupEditText(R.id.email_entry, R.string.preference_email)
-        setupEditText(R.id.phone_number_entry, R.string.preference_phone_number)
+        findViewById<CheckBox>(R.id.sweepstakes_checkbox).also { box ->
+            val pref =
+                getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+            box.isChecked = pref.getBoolean(getString(R.string.preference_enter_sweepstakes), false)
+            box.setOnClickListener {
+                with(pref.edit()) {
+                    putBoolean(getString(R.string.preference_enter_sweepstakes), box.isChecked)
+                    apply()
+                }
+            }
+        }
+
+        for (pair in EDIT_TEXT_PREFS) {
+            setupEditText(pair.key, pair.value)
+        }
     }
 
     override fun onStart() {

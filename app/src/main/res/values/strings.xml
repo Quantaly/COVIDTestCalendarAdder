@@ -17,6 +17,7 @@
     <string name="last_name">Last</string>
     <string name="email">Email</string>
     <string name="phone_number">Phone</string>
+    <string name="preference_enter_sweepstakes">enter-sweepstakes</string>
     <string name="preference_first_name">first-name</string>
     <string name="preference_last_name">last-name</string>
     <string name="preference_email">email</string>
