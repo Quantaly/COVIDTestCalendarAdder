@@ -61,10 +61,10 @@ class MainActivity : AppCompatActivity() {
                 ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
             }) {
             permissionButton.isEnabled = false
-            permissionButton.text = getString(R.string.permissions_granted)
+            permissionButton.setText(R.string.permissions_granted)
         } else {
             permissionButton.isEnabled = true
-            permissionButton.text = getString(R.string.grant_permissions)
+            permissionButton.setText(R.string.grant_permissions)
         }
     }
 
