@@ -6,10 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.view.View
-import android.widget.AdapterView
-import android.widget.Button
-import android.widget.SimpleCursorAdapter
-import android.widget.Spinner
+import android.widget.*
+import androidx.annotation.IdRes
+import androidx.annotation.StringRes
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
@@ -34,7 +33,10 @@ class MainActivity : AppCompatActivity() {
                 .toTypedArray(), nextPermissionRequestCode++)
         }
 
-
+        setupEditText(R.id.first_name_entry, R.string.preference_first_name)
+        setupEditText(R.id.last_name_entry, R.string.preference_last_name)
+        setupEditText(R.id.email_entry, R.string.preference_email)
+        setupEditText(R.id.phone_number_entry, R.string.preference_phone_number)
     }
 
     override fun onStart() {
@@ -53,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         loadSpinner()
     }
 
-    fun refreshButton() {
+    private fun refreshButton() {
         val permissionButton = findViewById<Button>(R.id.permission_button)
         if (PERMISSIONS.all {
                 ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
@@ -66,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun loadSpinner() {
+    private fun loadSpinner() {
         val calendarSpinner = findViewById<Spinner>(R.id.calendar_spinner)
         if (ContextCompat.checkSelfPermission(
                 this,
@@ -128,6 +130,19 @@ class MainActivity : AppCompatActivity() {
                     // i don't think this will ever be called...
                 }
             }
+        }
+    }
+
+    private fun setupEditText(@IdRes editTextId: Int, @StringRes preferenceId: Int) {
+        val pref = getString(preferenceId)
+        findViewById<EditText>(editTextId).also {
+            it.setText(
+                getSharedPreferences(
+                    getString(R.string.preference_file_key),
+                    Context.MODE_PRIVATE
+                ).getString(pref, "")
+            )
+            it.addTextChangedListener(SharedPrefTextWatcher(this, pref))
         }
     }
 }
