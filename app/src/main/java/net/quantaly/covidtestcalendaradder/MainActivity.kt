@@ -25,7 +25,7 @@ val EDIT_TEXT_PREFS = mapOf(
     R.id.phone_number_entry to R.string.preference_phone_number,
 )
 
-var nextPermissionRequestCode = 1;
+var nextPermissionRequestCode = 1
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
