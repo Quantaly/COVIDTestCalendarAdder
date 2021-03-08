@@ -9,13 +9,18 @@ class SmsReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
         val messages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
+
+        var address = ""
+        var body = ""
         for (message in messages) {
-            if (message.originatingAddress == context.getString(R.string.incoming_number) &&
-                message.messageBody.contains(context.getString(R.string.match_text))
-            ) {
-                handleMessage(context, message.messageBody)
-                showToast(context, context.getString(R.string.event_added_toast))
-            }
+            address = message.originatingAddress ?: ""
+            body += message.messageBody
+        }
+
+        if (address == context.getString(R.string.incoming_number) &&
+            body.contains(context.getString(R.string.match_text))
+        ) {
+            handleMessage(context, body)
         }
     }
 }

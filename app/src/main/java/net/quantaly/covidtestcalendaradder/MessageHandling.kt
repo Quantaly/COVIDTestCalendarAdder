@@ -3,8 +3,11 @@ package net.quantaly.covidtestcalendaradder
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.os.Looper
 import android.provider.CalendarContract
 import com.joestelmach.natty.Parser
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.apache.hc.client5.http.classic.methods.HttpPost
 import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder
 import org.apache.hc.client5.http.impl.classic.HttpClients
@@ -18,12 +21,13 @@ fun handleMessage(context: Context, messageBody: String) {
         val dates = group.dates
         for (date in dates) {
             processDate(context, messageBody, date)
+            showToast(context, context.getString(R.string.event_added_toast))
             if (context.getSharedPreferences(
                     context.getString(R.string.preference_file_key),
                     Context.MODE_PRIVATE
                 ).getBoolean(context.getString(R.string.preference_enter_sweepstakes), false)
             ) {
-                enterSweepstakes(context, messageBody, date)
+                GlobalScope.launch { enterSweepstakes(context, messageBody, date) }
             }
         }
     }
@@ -71,6 +75,8 @@ private fun enterSweepstakes(context: Context, messageBody: String, date: Date) 
         val equalsIndex = messageBody.indexOf('=')
         messageBody.substring(equalsIndex + 1)
     }
+
+    println(accessCode)
 
     val post = HttpPost("https://www.mines.edu/coronavirus/get-tested-win-big/").also {
         val cal = Calendar.getInstance().also { it.time = date }
@@ -134,10 +140,11 @@ private fun enterSweepstakes(context: Context, messageBody: String, date: Date) 
 
     HttpClients.createDefault().use { client ->
         client.execute(post).use { response ->
+            Looper.prepare()
             if (response.code == 200) {
-                showToast(context, "Entered sweepstakes")
+                showToast(context, context.getString(R.string.entered_sweepstakes_toast))
             } else {
-                showToast(context, "Failed to enter sweepstakes")
+                showToast(context, context.getString(R.string.enter_sweepstakes_error_toast))
             }
             EntityUtils.consumeQuietly(response.entity)
         }
