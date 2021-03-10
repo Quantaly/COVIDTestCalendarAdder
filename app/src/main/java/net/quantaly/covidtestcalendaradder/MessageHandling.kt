@@ -8,10 +8,10 @@ import android.provider.CalendarContract
 import com.joestelmach.natty.Parser
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.apache.hc.client5.http.classic.methods.HttpPost
-import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder
-import org.apache.hc.client5.http.impl.classic.HttpClients
-import org.apache.hc.core5.http.io.entity.EntityUtils
+import okhttp3.MultipartBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.internal.closeQuietly
 import java.util.*
 
 fun handleMessage(context: Context, messageBody: String) {
@@ -76,77 +76,79 @@ private fun enterSweepstakes(context: Context, messageBody: String, date: Date) 
         messageBody.substring(equalsIndex + 1)
     }
 
-    println(accessCode)
+    val client = OkHttpClient()
+    val cal = Calendar.getInstance().also { it.time = date }
 
-    val post = HttpPost("https://www.mines.edu/coronavirus/get-tested-win-big/").also {
-        val cal = Calendar.getInstance().also { it.time = date }
-        it.entity = MultipartEntityBuilder.create()
-            .addTextBody(
-                "input_2.3",
-                pref.getString(context.getString(R.string.preference_first_name), "")
-            )
-            .addTextBody(
-                "input_2.6",
-                pref.getString(context.getString(R.string.preference_last_name), "")
-            )
-            .addTextBody(
-                "input_3",
-                pref.getString(context.getString(R.string.preference_email), "")
-            )
-            .addTextBody(
-                "input_4",
-                pref.getString(context.getString(R.string.preference_phone_number), "")
-            )
-            .addTextBody(
-                "input_5",
-                accessCode
-            )
-            .addTextBody(
-                "input_6",
-                "${cal.get(Calendar.MONTH) + 1}/${cal.get(Calendar.DAY_OF_MONTH)}/${cal.get(Calendar.YEAR)}"
-            )
-            .addTextBody(
-                "is_submit_8",
-                "1"
-            )
-            .addTextBody(
-                "gform_submit",
-                "8"
-            )
-            .addTextBody(
-                "gform_unique_id",
-                ""
-            )
-            .addTextBody(
-                "state_8",
-                // from what I can tell, this does not ever change, which is weird but welcome
-                "WyJbXSIsImJiOTNmZDQ2MjM3ZjVjNzgxZjNhZmYwZDNhNmJiZGZlIl0="
-            )
-            .addTextBody(
-                "gform_target_page_number_8",
-                "0"
-            )
-            .addTextBody(
-                "gform_source_page_number_8",
-                "1"
-            )
-            .addTextBody(
-                "gform_field_values",
-                ""
-            ).build()
+    val body = MultipartBody.Builder()
+        .setType(MultipartBody.FORM)
+        .addFormDataPart(
+            "input_2.3",
+            pref.getString(context.getString(R.string.preference_first_name), "")!!
+        )
+        .addFormDataPart(
+            "input_2.6",
+            pref.getString(context.getString(R.string.preference_last_name), "")!!
+        )
+        .addFormDataPart(
+            "input_3",
+            pref.getString(context.getString(R.string.preference_email), "")!!
+        )
+        .addFormDataPart(
+            "input_4",
+            pref.getString(context.getString(R.string.preference_phone_number), "")!!
+        )
+        .addFormDataPart(
+            "input_5",
+            accessCode
+        )
+        .addFormDataPart(
+            "input_6",
+            "${cal.get(Calendar.MONTH) + 1}/${cal.get(Calendar.DAY_OF_MONTH)}/${cal.get(Calendar.YEAR)}"
+        )
+        .addFormDataPart(
+            "is_submit_8",
+            "1"
+        )
+        .addFormDataPart(
+            "gform_submit",
+            "8"
+        )
+        .addFormDataPart(
+            "gform_unique_id",
+            ""
+        )
+        .addFormDataPart(
+            "state_8",
+            // from what I can tell, this does not ever change, which is weird but welcome
+            "WyJbXSIsImJiOTNmZDQ2MjM3ZjVjNzgxZjNhZmYwZDNhNmJiZGZlIl0="
+        )
+        .addFormDataPart(
+            "gform_target_page_number_8",
+            "0"
+        )
+        .addFormDataPart(
+            "gform_source_page_number_8",
+            "1"
+        )
+        .addFormDataPart(
+            "gform_field_values",
+            ""
+        ).build()
+
+    val request = Request.Builder()
         // can't hurt
-        it.addHeader("User-Agent", "Mozilla/5.0")
-    }
+        .header("User-Agent", "Mozilla/5.0")
+        .url("https://www.mines.edu/coronavirus/get-tested-win-big/")
+        .post(body)
+        .build()
 
-    HttpClients.createDefault().use { client ->
-        client.execute(post).use { response ->
-            Looper.prepare()
-            if (response.code == 200) {
-                showToast(context, context.getString(R.string.entered_sweepstakes_toast))
-            } else {
-                showToast(context, context.getString(R.string.enter_sweepstakes_error_toast))
-            }
-            EntityUtils.consumeQuietly(response.entity)
+    client.newCall(request).execute().use {
+        Looper.prepare()
+        if (it.isSuccessful) {
+            showToast(context, context.getString(R.string.entered_sweepstakes_toast))
+        } else {
+            showToast(context, context.getString(R.string.enter_sweepstakes_error_toast))
         }
+        it.closeQuietly()
     }
 }
