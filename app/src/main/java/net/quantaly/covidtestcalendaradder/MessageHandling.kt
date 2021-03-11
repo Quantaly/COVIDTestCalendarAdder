@@ -140,7 +140,8 @@ private fun enterSweepstakes(context: Context, messageBody: String, date: Date) 
 
     HttpClients.createDefault().use { client ->
         client.execute(post).use { response ->
-            Looper.prepare()
+            // apparently this thread gets reused, and crashes if there is already a Looper
+            Looper.myLooper() ?: Looper.prepare()
             if (response.code == 200) {
                 showToast(context, context.getString(R.string.entered_sweepstakes_toast))
             } else {
