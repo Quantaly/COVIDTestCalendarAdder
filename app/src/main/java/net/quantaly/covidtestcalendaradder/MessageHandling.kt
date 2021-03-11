@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Looper
 import android.provider.CalendarContract
+import android.util.Log
 import com.joestelmach.natty.Parser
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -20,6 +21,11 @@ fun handleMessage(context: Context, messageBody: String) {
     for (group in groups) {
         val dates = group.dates
         for (date in dates) {
+            Log.println(
+                Log.INFO,
+                "COVIDTestCalendarAdder",
+                "Adding test to calendar, date is $date"
+            )
             processDate(context, messageBody, date)
             showToast(context, context.getString(R.string.event_added_toast))
             if (context.getSharedPreferences(
@@ -76,7 +82,11 @@ private fun enterSweepstakes(context: Context, messageBody: String, date: Date) 
         messageBody.substring(equalsIndex + 1)
     }
 
-    println(accessCode)
+    Log.println(
+        Log.INFO,
+        "COVIDTestCalendarAdder",
+        "Entering sweepstakes with access code $accessCode"
+    )
 
     val post = HttpPost("https://www.mines.edu/coronavirus/get-tested-win-big/").also {
         val cal = Calendar.getInstance().also { it.time = date }
