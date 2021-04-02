@@ -11,6 +11,7 @@
     <string name="select_calendar">Select a calendar to add events to:</string>
     <string name="event_title">COVID test</string>
     <string name="event_added_toast">Event added to calendar</string>
+    <string name="sweepstakes_intro">Mines runs a <a href="https://www.mines.edu/coronavirus/get-tested-win-big/">sweepstakes</a> that you can enter by signing up for tests. Note that I have not yet managed to verify whether this functionality of the app actually works.</string>
     <string name="enter_sweepstakes">Submit tests to the sweepstakes?</string>
     <string name="first_name">First</string>
     <string name="last_name">Last</string>

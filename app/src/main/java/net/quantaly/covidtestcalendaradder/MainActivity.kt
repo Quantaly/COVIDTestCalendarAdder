@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.CalendarContract
+import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.*
 import androidx.annotation.IdRes
@@ -39,6 +40,8 @@ class MainActivity : AppCompatActivity() {
             }
                 .toTypedArray(), nextPermissionRequestCode++)
         }
+
+        findViewById<TextView>(R.id.sweepstakes_intro).movementMethod = LinkMovementMethod.getInstance()
 
         findViewById<CheckBox>(R.id.sweepstakes_checkbox).also { box ->
             val pref =
