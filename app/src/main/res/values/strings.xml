@@ -4,8 +4,7 @@
     <string name="preference_file_key">net.quantaly.covidtestcalendaradder.whytheheccaredefaultsharedpreferencesdeprecated</string>
     <string name="preference_calendar_id">the-id-of-the-calendar-that-the-user-picked</string>
     <string name="incoming_number">38413</string>
-    <string name="match_text">COVID-19 Testing COVID appointment confirmed</string>
-    <string name="sample_message">Colorado School of Mines COVID-19 Testing COVID appointment confirmed on February 16 at 01:00 PM at 1922 Jones Road, Golden, CO 80401, USA. Please confirm your phone number by clicking: http://primarybio.com/verify_phone?access_code=CEBEF5DC2C</string>
+    <string name="match_text">appointment confirmed</string>
     <string name="permissions_required">This app requires access to your text messages and calendar in order to function.</string>
     <string name="grant_permissions">Grant Permissions</string>
     <string name="permissions_granted">All Permissions Granted</string>
