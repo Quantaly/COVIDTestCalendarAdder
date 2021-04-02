@@ -44,7 +44,9 @@ class MainActivity : AppCompatActivity() {
             val pref =
                 getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
             box.isChecked = pref.getBoolean(getString(R.string.preference_enter_sweepstakes), false)
+            EDIT_TEXT_PREFS.keys.forEach { findViewById<TextView>(it).isEnabled = box.isChecked }
             box.setOnClickListener {
+                EDIT_TEXT_PREFS.keys.forEach { findViewById<TextView>(it).isEnabled = box.isChecked }
                 with(pref.edit()) {
                     putBoolean(getString(R.string.preference_enter_sweepstakes), box.isChecked)
                     apply()
